@@ -1,0 +1,14 @@
+﻿type,compound,Site A,Site B,Site C
+PAHs,benzo[a]pyrene,2,,3
+PAHs,benzo[b]fluoranthene,2,,3
+PAHs,benzo[k]fluoranthene,2,,3
+PAHs,pyrene,3,,
+PAHs,benzo[a]anthracene,,,3
+PAHs,phenanthrene,,,3
+PAHs,anthracene,,,3
+Pesticide,alpha-Chlordane,,,3
+Pesticide,trans-Nonachlor,,,3
+PAHs,benzo[ghi]perylene,,,2
+PAHs,"ideno[1,2,3cd]pyrene",,,2
+PAHs,chrysene,,,1
+Pesticide,DDD/DDE ,,,1

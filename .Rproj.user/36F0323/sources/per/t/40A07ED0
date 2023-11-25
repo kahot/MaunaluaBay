@@ -1,0 +1,26 @@
+{
+    "id": "40A07ED0",
+    "path": "~/Projects/MaunaluaBay/Rscripts/MBay_biomarker_figures.R",
+    "project_path": "Rscripts/MBay_biomarker_figures.R",
+    "type": "r_source",
+    "hash": "1737319556",
+    "contents": "",
+    "dirty": false,
+    "created": 1699046262717.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "220,40",
+        "scrollLine": "227"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1700931906,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1700931906771,
+    "read_only": false,
+    "read_only_alternatives": []
+}

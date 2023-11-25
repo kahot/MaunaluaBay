@@ -1,0 +1,25 @@
+﻿Original_site,Site,Mortality
+Site 1,Site A,0.3571
+Site 1,Site A,0.2286
+Site 1,Site A,0.2143
+Site 1,Site A,0.2727
+Site 2,Site B,0.3137
+Site 2,Site B,0.1724
+Site 2,Site B,0.3333
+Site 2,Site B,0.2195
+Site 3,Site C,0.2083
+Site 3,Site C,0.1154
+Site 3,Site C,0.1515
+Site 3,Site C,0.2973
+Site 4,Site E,0.2909
+Site 4,Site E,0.2619
+Site 4,Site E,0.2857
+Site 4,Site E,0.1176
+Site 5,Site N,0.4634
+Site 5,Site N,0.4828
+Site 5,Site N,0.2432
+Site 5,Site N,0.2679
+REF,Control,0
+REF,Control,0
+REF,Control,0.0513
+REF,Control,0.0682

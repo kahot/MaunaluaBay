@@ -1,0 +1,28 @@
+{
+    "id": "5D78E1D5",
+    "path": "~/Projects/MaunaluaBay/Rscripts/urchin_assay.Rmd",
+    "project_path": "Rscripts/urchin_assay.Rmd",
+    "type": "r_markdown",
+    "hash": "1533974845",
+    "contents": "",
+    "dirty": false,
+    "created": 1681153291070.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "chunk_output_type": "inline",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "177,21",
+        "scrollLine": "173"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1700932120,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1700932120867,
+    "read_only": false,
+    "read_only_alternatives": []
+}
