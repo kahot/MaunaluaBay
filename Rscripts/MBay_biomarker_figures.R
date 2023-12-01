@@ -2,26 +2,22 @@ library(ggplot2)
 library(dplyr)
 library(plotrix)
 library(cowplot)
-library(gridExtra)
 
 #color schemes for site
 # Ref, N, 3,2.5,K,T
 colors<-c("#0070C0","#843C0B","#C65A12","#F4B183","#F9CBAD","#FBE6D6")
 
-#Read the data
-#Maunalua Bay
+# Biomarker data for Maunalua Bay
 biomarkers<-read.csv("Data/biomarkers.csv", fill = T) 
-#Maui Means and SE
-#Maui Means and SE
-maui<-read.csv("Data/maui_means.csv")
 
+#Biomarker data for Maui
+maui<-read.csv("Data/maui_means.csv")
 
 # Create figures for all biomarkers
 
 markers<-colnames(biomarkers)[3:13]
 # sort the order by appearance in the manuscript text:
 markers<-markers[c(3,4,1,6,7,9,11,8,5,2,10)]
-
 
 plots<-list()
 for (i in 1:11){
@@ -77,17 +73,12 @@ for (i in 1:11){
         theme(plot.title = element_text(size = 10))+
         scale_x_discrete(labels=c("SiteN"="Site N","Site2"="Site 2.5","SiteT"="Site T","Site3"="Site 3","SiteK"="Site K"))
     }
-    #ggsave(paste0("Output/",marker,".png"), width = 5.5, height=4, dpi=300)
 }
 
 
-#png(paste0("Output/biomarkers_barcharts.png"), height = 7, width = 6.5, res=300, units = "in")
-#do.call(grid.arrange, c(plots, ncol=3))
-#dev.off()
 
 #png(paste0("Output/biomarkers_barcharts_all.png"), height = 7, width = 6.5, res=300, units = "in")
 pdf(paste0("Output/biomarkers_barcharts_all.pdf"), height = 7, width = 6.5)
-
 ggdraw()+
     draw_plot(plots[[1]],x=0,   y=0.65,width=0.33,height=0.2)+
     draw_plot(plots[[2]],x=0.33,y=0.65,width=0.33,height=0.2)+
@@ -105,8 +96,9 @@ draw_plot_label(c("A","B","C","D","E","F","G","H","I","J","K"),
                 c(0.85,0.85,0.85,0.65,0.65,0.65,0.45,0.45,0.45,0.25,0.25), size = 11)
 
 dev.off()
+    
 
-#stats
+#Stats
 
 pretest<-data.frame(marker=markers)
 for (i in 1:11){
@@ -137,6 +129,127 @@ for (i in 1:11){
 #11            GPx 7.817460e-02            Y 2.082087e-01            Y
 
 
+# Apply anova with tukey-posthoc for passed biomarkers
+
+markers1<-markers[c(1,2,3,4,8,10,11)]
+markers2<-markers[c(5,6,7,9)]
+
+stats1<-data.frame(marker=markers1)
+stats_pairwise1<-list()
+for (i in 1:7){
+    df<-biomarkers[,c("Site", markers1[i])]
+    colnames(df)[2]<-"amount"
+    df<-df[!is.na(df$amount),]
+    anova = aov(amount~Site,df)
+    sum<-summary(anova)[[1]]
+    
+    stats1$anova_pval[i]<-sum$`Pr(>F)`[1]
+    
+    post<-TukeyHSD(x=anova,'Site', conf.level=0.95)
+    stats_pairwise1[[i]]<-post$Site
+    names(stats_pairwise1)[i]<-markers1[i]
+}
+stats1
+#           marker   anova_pval
+#1      Porphyrin 5.250592e-01
+#2   DNA.AP.sites 2.066118e-02
+#3      Ubiquitin 5.994201e-05
+#4          Hsp70 4.977158e-09
+#5           MutY 5.382348e-08
+#6 Heme.Oxygenase 1.229648e-07
+#7            GPx 8.211623e-04
+
+stats_pairwise1
+#$Porphyrin
+#                   diff       lwr      upr     p adj
+#Site3-Site2  0.002456668 -5.273169 5.278082 1.0000000
+#SiteK-Site2 -2.393913668 -7.398811 2.610984 0.6028272
+#SiteN-Site2 -1.420683332 -6.696309 3.854942 0.9210280
+#SiteT-Site2 -0.411099000 -5.415997 4.593799 0.9990471
+#SiteK-Site3 -2.396370336 -7.401268 2.608527 0.6019343
+#SiteN-Site3 -1.423140000 -6.698765 3.852485 0.9205766
+#SiteT-Site3 -0.413555667 -5.418453 4.591342 0.9990245
+#SiteN-SiteK  0.973230336 -4.031667 5.978128 0.9745113
+#SiteT-SiteK  1.982814668 -2.735848 6.701477 0.7072025
+#SiteT-SiteN  1.009584333 -3.995313 6.014482 0.9709100
+#
+#$DNA.AP.sites
+#               diff        lwr       upr      p adj
+#Site3-Site2  291.73250  -360.9803  944.4453 0.66429132
+#SiteK-Site2 -227.11475  -846.3325  392.1030 0.79970309
+#SiteN-Site2  -27.57125  -680.2840  625.1415 0.99993362
+#SiteT-Site2  424.48958  -171.3529 1020.3321 0.24109129
+#SiteK-Site3 -518.84725 -1138.0650  100.3705 0.12671898
+#SiteN-Site3 -319.30375  -972.0165  333.4090 0.58785386
+#SiteT-Site3  132.75708  -463.0854  728.5996 0.95962523
+#SiteN-SiteK  199.54350  -419.6742  818.7612 0.86313594
+#SiteT-SiteK  651.60433    92.6545 1210.5542 0.01797114
+#SiteT-SiteN  452.06083  -143.7817 1047.9034 0.19202317
+#
+#$Ubiquitin
+#               diff         lwr       upr        p adj
+#Site3-Site2   7.916667  -62.880560  78.71389 9.972297e-01
+#SiteK-Site2 -77.833333 -141.156298 -14.51037 1.098192e-02
+#SiteN-Site2  55.500000   -7.822965 118.82296 1.053152e-01
+#SiteT-Site2 -27.500000  -90.822965  35.82296 7.033919e-01
+#SiteK-Site3 -85.750000 -156.547227 -14.95277 1.242193e-02
+#SiteN-Site3  47.583333  -23.213893 118.38056 3.034152e-01
+#SiteT-Site3 -35.416667 -106.213893  35.38056 5.856996e-01
+#SiteN-SiteK 133.333333   70.010369 196.65630 2.177098e-05
+#SiteT-SiteK  50.333333  -12.989631 113.65630 1.655715e-01
+#SiteT-SiteN -83.000000 -146.322965 -19.67704 6.228851e-03
+#
+#$Hsp70
+#               diff        lwr        upr        p adj
+#Site3-Site2   4.000000  -5.530845  13.530845 7.283886e-01
+#SiteK-Site2  -9.833333 -18.357980  -1.308687 1.837921e-02
+#SiteN-Site2  15.500000   6.975353  24.024647 1.652346e-04
+#SiteT-Site2 -13.500000 -22.024647  -4.975353 8.905669e-04
+#SiteK-Site3 -13.833333 -23.364178  -4.302489 2.299002e-03
+#SiteN-Site3  11.500000   1.969155  21.030845 1.281905e-02
+#SiteT-Site3 -17.500000 -27.030845  -7.969155 1.454236e-04
+#SiteN-SiteK  25.333333  16.808687  33.857980 7.866270e-08
+#SiteT-SiteK  -3.666667 -12.191313   4.857980 7.105707e-01
+#SiteT-SiteN -29.000000 -37.524647 -20.475353 6.561907e-09
+#
+#$MutY
+#                 diff         lwr         upr        p adj
+#Site3-Site2   1.166667  -9.5720721  11.9054054 9.975235e-01
+#SiteK-Site2  -9.333333 -18.9383533   0.2716866 5.962695e-02
+#SiteN-Site2 -27.000000 -36.6050200 -17.3949800 2.097591e-07
+#SiteT-Site2 -17.166667 -26.7716866  -7.5616467 2.062423e-04
+#SiteK-Site3 -10.500000 -21.2387388   0.2387388 5.743602e-02
+#SiteN-Site3 -28.166667 -38.9054054 -17.4279279 6.860021e-07
+#SiteT-Site3 -18.333333 -29.0720721  -7.5945946 3.662021e-04
+#SiteN-SiteK -17.666667 -27.2716866  -8.0616467 1.421690e-04
+#SiteT-SiteK  -7.833333 -17.4383533   1.7716866 1.481376e-01
+#SiteT-SiteN   9.833333   0.2283134  19.4383533 4.302629e-02
+#
+#$Heme.Oxygenase
+#                  diff         lwr         upr        p adj
+#Site3-Site2  -63.25000 -151.736923   25.236923 2.485954e-01
+#SiteK-Site2 -161.50000 -240.645110  -82.354890 3.426190e-05
+#SiteN-Site2   19.00000  -60.145110   98.145110 9.521784e-01
+#SiteT-Site2 -174.83333 -253.978443  -95.688224 1.067065e-05
+#SiteK-Site3  -98.25000 -186.736923   -9.763077 2.452036e-02
+#SiteN-Site3   82.25000   -6.236923  170.736923 7.708954e-02
+#SiteT-Site3 -111.58333 -200.070256  -23.096411 8.811185e-03
+#SiteN-SiteK  180.50000  101.354890  259.645110 6.552324e-06
+#SiteT-SiteK  -13.33333  -92.478443   65.811776 9.867492e-01
+#SiteT-SiteN -193.83333 -272.978443 -114.688224 2.123782e-06
+#
+#$GPx
+#                  diff       lwr        upr       p adj
+#Site3-Site2   8.833333 -10.89156 28.5582290 0.679717199
+#SiteK-Site2 -12.333333 -29.97582  5.3091497 0.267929782
+#SiteN-Site2 -16.833333 -34.47582  0.8091497 0.066419102
+#SiteT-Site2 -20.333333 -37.97582 -2.6908503 0.018502887
+#SiteK-Site3 -21.166667 -40.89156 -1.4417710 0.031316779
+#SiteN-Site3 -25.666667 -45.39156 -5.9417710 0.006657782
+#SiteT-Site3 -29.166667 -48.89156 -9.4417710 0.001892002
+#SiteN-SiteK  -4.500000 -22.14248 13.1424830 0.941044529
+#SiteT-SiteK  -8.000000 -25.64248  9.6424830 0.669778391
+#SiteT-SiteN  -3.500000 -21.14248 14.1424830 0.975774397
 
 
 # Test correlation with distance
@@ -218,7 +331,6 @@ for (i in 1:nrow(corrs)){
     
 }
 
-# Create legend for the correlation plot
 ggplot(df, aes(x=distance, y=mean, fill=Site))+
     geom_point(size=3.8, shape=21, color="gray50")+
     theme_classic()+xlab(xlab)+
@@ -244,6 +356,5 @@ ggdraw()+
     draw_plot_label(c("A","B","C","D"), 
                     c(0,0.5,0,0.5),
                     c(0.99,0.99,0.5,0.5), size = 11)
-
 dev.off()
 
