@@ -4,8 +4,8 @@ library(plotrix)
 library(cowplot)
 
 #color schemes for site
-# Ref, N, 3,2.5,K,T
-colors<-c("#0070C0","#843C0B","#C65A12","#F4B183","#F9CBAD","#FBE6D6")
+# N, 3,2.5,K,T, Ref
+colors<-c("#843C0B","#C65A12","#F4B183","#F9CBAD","#FBE6D6","#0070C0")
 
 # Biomarker data for Maunalua Bay
 biomarkers<-read.csv("Data/biomarkers.csv", fill = T) 
@@ -41,7 +41,7 @@ for (i in 1:11){
         means$mean[1]<-maui$mean[maui$Biomarker==marker]
         means$SE[1]<-maui$SE[maui$Biomarker==marker]
     }
-    means$Site<-factor(means$Site, levels=c("Maui","SiteN","Site3","Site2","SiteT",'SiteK'))
+    means$Site<-factor(means$Site, levels=c("SiteN","Site3","Site2","SiteT",'SiteK',"Maui"))
     
     if (i!= 10) unit<-"fmole/mg TSP"
     if (i==10) unit<-expression(paste("AP sites per", 10^5,"bp"))
